@@ -41,6 +41,18 @@ namespace AgileHub.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RetroBoards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RetroBoards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlanningRooms",
                 columns: table => new
                 {
@@ -63,6 +75,25 @@ namespace AgileHub.Api.Migrations
                         name: "FK_PlanningRooms_EstimationSystems_EstimationSystemId",
                         column: x => x.EstimationSystemId,
                         principalTable: "EstimationSystems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BoardColumns",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RetroBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoardColumns", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BoardColumns_RetroBoards_RetroBoardId",
+                        column: x => x.RetroBoardId,
+                        principalTable: "RetroBoards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -95,7 +126,8 @@ namespace AgileHub.Api.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AvatarId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PlanningRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    PlanningRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RetroBoardId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,6 +142,31 @@ namespace AgileHub.Api.Migrations
                         column: x => x.PlanningRoomId,
                         principalTable: "PlanningRooms",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Users_RetroBoards_RetroBoardId",
+                        column: x => x.RetroBoardId,
+                        principalTable: "RetroBoards",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BoardColumnId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notes_BoardColumns_BoardColumnId",
+                        column: x => x.BoardColumnId,
+                        principalTable: "BoardColumns",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,6 +195,32 @@ namespace AgileHub.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NoteId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "EstimationSystems",
                 columns: new[] { "Id", "Name", "Values" },
@@ -148,6 +231,26 @@ namespace AgileHub.Api.Migrations
                     { new Guid("69d1b033-099e-41e9-8e13-2ddeb98a4095"), "Fibonacci", "[\"1\",\"3\",\"5\",\"8\",\"13\",\"21\",\"34\",\"Coffee\"]" },
                     { new Guid("a4721373-cc8f-43c0-81a6-60676d2c024c"), "T-Shirt", "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\",\"XXXL\",\"Coffeee\"]" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardColumns_RetroBoardId",
+                table: "BoardColumns",
+                column: "RetroBoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_NoteId",
+                table: "Comments",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId",
+                table: "Comments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_BoardColumnId",
+                table: "Notes",
+                column: "BoardColumnId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanningRooms_EstimationSystemId",
@@ -170,6 +273,11 @@ namespace AgileHub.Api.Migrations
                 column: "PlanningRoomId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_RetroBoardId",
+                table: "Users",
+                column: "RetroBoardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Votes_StoryId",
                 table: "Votes",
                 column: "StoryId");
@@ -184,7 +292,13 @@ namespace AgileHub.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
                 name: "Votes");
+
+            migrationBuilder.DropTable(
+                name: "Notes");
 
             migrationBuilder.DropTable(
                 name: "Stories");
@@ -193,10 +307,16 @@ namespace AgileHub.Api.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "BoardColumns");
+
+            migrationBuilder.DropTable(
                 name: "Avatars");
 
             migrationBuilder.DropTable(
                 name: "PlanningRooms");
+
+            migrationBuilder.DropTable(
+                name: "RetroBoards");
 
             migrationBuilder.DropTable(
                 name: "EstimationSystems");

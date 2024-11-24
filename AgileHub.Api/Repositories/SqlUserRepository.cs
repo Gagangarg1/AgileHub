@@ -1,5 +1,6 @@
 ﻿using AgileHub.Api.Data;
 using AgileHub.Api.Models.Domain;
+using AgileHub.Api.Models.Domain.PokerPlanning;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileHub.Api.Repositories
@@ -52,6 +53,11 @@ namespace AgileHub.Api.Repositories
             return await dbContext.Users.Where(x => x.PlanningRoomId == planningRoomId).Include(x => x.Avatar).ToListAsync();
         }
 
+        public async Task<List<User>> GetByRetroBoardIdAsync(Guid retroBoardId)
+        {
+            return await dbContext.Users.Where(x => x.RetroBoardId == retroBoardId).Include(x => x.Avatar).ToListAsync();
+        }
+
         public async Task<User?> UpdateAsync(Guid id, User user)
         {
             var existingUser = await dbContext.Users.Include(x => x.Avatar).FirstOrDefaultAsync(x => x.Id == id);
@@ -62,7 +68,14 @@ namespace AgileHub.Api.Repositories
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
             existingUser.AvatarId = user.AvatarId;
-            existingUser.PlanningRoomId = user.PlanningRoomId;
+            if (user.PlanningRoomId != null)
+            {
+                existingUser.PlanningRoomId = user.PlanningRoomId;
+            }
+            if (user.RetroBoardId != null)
+            {
+                existingUser.RetroBoardId = user.RetroBoardId;
+            }
 
             await dbContext.SaveChangesAsync();
             return existingUser;

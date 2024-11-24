@@ -1,5 +1,6 @@
 ﻿using AgileHub.Api.Models.Domain;
 using AgileHub.Api.Models.Domain.PokerPlanning;
+using AgileHub.Api.Models.Domain.SprintRetro;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgileHub.Api.Data
@@ -14,6 +15,10 @@ namespace AgileHub.Api.Data
         public DbSet<Vote> Votes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
+        public DbSet<RetroBoard> RetroBoards { get; set; }
+        public DbSet<BoardColumn> BoardColumns { get; set; }
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -5,6 +5,7 @@ using AgileHub.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using AgileHub.Api.Middlewares;
+using AgileHub.Api.Repositories.SprintRetro;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +29,14 @@ builder.Services.AddScoped<IEstimationSystemRepository, SqlEstimationSystemRepos
 builder.Services.AddScoped<IPlanningRoomRepository, SqlPlanningRoomRepository>();
 builder.Services.AddScoped<IStoryRepository, SqlStoryRepository>();
 builder.Services.AddScoped<IVoteRepository, SqlVoteRepository>();
+
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
 builder.Services.AddScoped<IAvatarRepository, SqlAvatarRepository>();
+
+builder.Services.AddScoped<IRetroBoardRepository, SqlRetroBoardRepository>();
+builder.Services.AddScoped<IBoardColumnRepository, SqlBoardColumnRepository>();
+builder.Services.AddScoped<INoteRepository, SqlNoteRepository>();
+builder.Services.AddScoped<ICommentRepository, SqlCommentRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

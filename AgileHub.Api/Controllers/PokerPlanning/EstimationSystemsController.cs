@@ -1,4 +1,5 @@
-﻿using AgileHub.Api.Models.Domain.PokerPlanning;
+﻿using AgileHub.Api.CustomActionFilters;
+using AgileHub.Api.Models.Domain.PokerPlanning;
 using AgileHub.Api.Models.DTO.PokerPlanning;
 using AgileHub.Api.Repositories.PokerPlanning;
 using AutoMapper;
@@ -13,10 +14,7 @@ namespace AgileHub.Api.Controllers.PokerPlanning
         private readonly IEstimationSystemRepository estimationSystemRepository;
         private readonly IMapper mapper;
 
-        public EstimationSystemsController(
-            IEstimationSystemRepository estimationSystemRepository,
-            IMapper mapper
-        )
+        public EstimationSystemsController(IEstimationSystemRepository estimationSystemRepository, IMapper mapper)
         {
             this.estimationSystemRepository = estimationSystemRepository;
             this.mapper = mapper;
@@ -43,9 +41,8 @@ namespace AgileHub.Api.Controllers.PokerPlanning
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateEstimationSystemDto createEstimationSystemDto
-        )
+        [ValidateModel]
+        public async Task<IActionResult> Create([FromBody] CreateEstimationSystemDto createEstimationSystemDto)
         {
             var estimationSystem = new EstimationSystem
             {
@@ -54,19 +51,13 @@ namespace AgileHub.Api.Controllers.PokerPlanning
             };
 
             estimationSystem = await estimationSystemRepository.CreateAsync(estimationSystem);
-            return CreatedAtAction(
-                nameof(Create),
-                new { id = estimationSystem.Id },
-                mapper.Map<EstimationSystemDto>(estimationSystem)
-            );
+            return CreatedAtAction(nameof(Create), new { id = estimationSystem.Id }, mapper.Map<EstimationSystemDto>(estimationSystem));
         }
 
         [HttpPut]
+        [ValidateModel]
         [Route("{id:guid}")]
-        public async Task<IActionResult> Update(
-            [FromRoute] Guid id,
-            [FromBody] UpdateEstimationSystemDto updateEstimationSystemDto
-        )
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateEstimationSystemDto updateEstimationSystemDto)
         {
             var estimationSystem = new EstimationSystem
             {

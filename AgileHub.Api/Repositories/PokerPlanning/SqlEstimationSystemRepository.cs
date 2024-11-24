@@ -22,9 +22,7 @@ namespace AgileHub.Api.Repositories.PokerPlanning
 
         public async Task<EstimationSystem?> DeleteAsync(Guid id)
         {
-            var estimationSystem = await dbContext.EstimationSystems.FirstOrDefaultAsync(x =>
-                x.Id == id
-            );
+            var estimationSystem = await dbContext.EstimationSystems.FirstOrDefaultAsync(x => x.Id == id);
             if (estimationSystem == null)
             {
                 return null;
@@ -47,9 +45,7 @@ namespace AgileHub.Api.Repositories.PokerPlanning
 
         public async Task<EstimationSystem?> UpdateAsync(Guid id, EstimationSystem estimationSystem)
         {
-            var existingEstimationSystem = await dbContext.EstimationSystems.FirstOrDefaultAsync(
-                x => x.Id == id
-            );
+            var existingEstimationSystem = await dbContext.EstimationSystems.FirstOrDefaultAsync(x => x.Id == id);
             if (existingEstimationSystem == null)
             {
                 return null;

@@ -1,4 +1,5 @@
-﻿using AgileHub.Api.Models.Domain.PokerPlanning;
+﻿using AgileHub.Api.CustomActionFilters;
+using AgileHub.Api.Models.Domain.PokerPlanning;
 using AgileHub.Api.Models.DTO.PokerPlanning;
 using AgileHub.Api.Repositories.PokerPlanning;
 using AutoMapper;
@@ -51,6 +52,7 @@ namespace AgileHub.Api.Controllers.PokerPlanning
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] CreateVoteDto createVoteDto)
         {
             var vote = mapper.Map<Vote>(createVoteDto);
@@ -59,6 +61,7 @@ namespace AgileHub.Api.Controllers.PokerPlanning
         }
 
         [HttpPut]
+        [ValidateModel]
         [Route("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateVoteDto updateVoteDto)
         {

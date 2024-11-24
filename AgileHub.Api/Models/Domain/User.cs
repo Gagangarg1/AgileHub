@@ -15,5 +15,6 @@ namespace AgileHub.Api.Models.Domain
         public Guid? AvatarId { get; set; }
         public Avatar? Avatar { get; set; }
         public Guid? PlanningRoomId { get; set; }
+        public Guid? RetroBoardId { get; set; }
     }
 }

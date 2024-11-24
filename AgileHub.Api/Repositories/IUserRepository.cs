@@ -6,6 +6,7 @@ namespace AgileHub.Api.Repositories
     {
         Task<List<User>> GetAllAsync();
         Task<List<User>> GetByPlanningRoomIdAsync(Guid planningRoomId);
+        Task<List<User>> GetByRetroBoardIdAsync(Guid retroBoardId);
         Task<User?> GetByIdAsync(Guid id);
         Task<User> CreateAsync(User user);
         Task<User?> UpdateAsync(Guid id, User user);

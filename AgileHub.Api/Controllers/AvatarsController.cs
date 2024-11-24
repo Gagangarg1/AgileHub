@@ -45,7 +45,6 @@ namespace AgileHub.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CreateAvatarDto createAvatarDto)
         {
             var avatar = mapper.Map<Avatar>(createAvatarDto);
-
             avatar = await avatarRepository.CreateAsync(avatar);
             return CreatedAtAction(nameof(Create), new { id = avatar.Id }, mapper.Map<AvatarDto>(avatar));
         }
@@ -56,7 +55,6 @@ namespace AgileHub.Api.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateAvatarDto updateAvatarDto)
         {
             var avatar = mapper.Map<Avatar>(updateAvatarDto);
-
             avatar = await avatarRepository.UpdateAsync(id, avatar);
             if (avatar == null)
             {

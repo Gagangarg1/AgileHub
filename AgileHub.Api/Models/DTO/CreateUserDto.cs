@@ -12,5 +12,6 @@ namespace AgileHub.Api.Models.DTO
         public string Email { get; set; }
         public Guid? AvatarId { get; set; }
         public Guid? PlanningRoomId { get; set; }
+        public Guid? RetroBoardId { get; set; }
     }
 }

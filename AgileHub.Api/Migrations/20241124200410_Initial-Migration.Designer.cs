@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgileHub.Api.Migrations
 {
     [DbContext(typeof(AgileHubDbContext))]
-    [Migration("20241124162616_Initial-Migration")]
+    [Migration("20241124200410_Initial-Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -185,6 +185,89 @@ namespace AgileHub.Api.Migrations
                     b.ToTable("Votes");
                 });
 
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.BoardColumn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RetroBoardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RetroBoardId");
+
+                    b.ToTable("BoardColumns");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("NoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BoardColumnId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardColumnId");
+
+                    b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.RetroBoard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RetroBoards");
+                });
+
             modelBuilder.Entity("AgileHub.Api.Models.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -205,11 +288,16 @@ namespace AgileHub.Api.Migrations
                     b.Property<Guid?>("PlanningRoomId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("RetroBoardId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
 
                     b.HasIndex("PlanningRoomId");
+
+                    b.HasIndex("RetroBoardId");
 
                     b.ToTable("Users");
                 });
@@ -253,6 +341,41 @@ namespace AgileHub.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.BoardColumn", b =>
+                {
+                    b.HasOne("AgileHub.Api.Models.Domain.SprintRetro.RetroBoard", null)
+                        .WithMany("BoardColumns")
+                        .HasForeignKey("RetroBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.Comment", b =>
+                {
+                    b.HasOne("AgileHub.Api.Models.Domain.SprintRetro.Note", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AgileHub.Api.Models.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.Note", b =>
+                {
+                    b.HasOne("AgileHub.Api.Models.Domain.SprintRetro.BoardColumn", null)
+                        .WithMany("Notes")
+                        .HasForeignKey("BoardColumnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AgileHub.Api.Models.Domain.User", b =>
                 {
                     b.HasOne("AgileHub.Api.Models.Domain.Avatar", "Avatar")
@@ -262,6 +385,10 @@ namespace AgileHub.Api.Migrations
                     b.HasOne("AgileHub.Api.Models.Domain.PokerPlanning.PlanningRoom", null)
                         .WithMany("PlanningRoomUsers")
                         .HasForeignKey("PlanningRoomId");
+
+                    b.HasOne("AgileHub.Api.Models.Domain.SprintRetro.RetroBoard", null)
+                        .WithMany("RetroBoardUsers")
+                        .HasForeignKey("RetroBoardId");
 
                     b.Navigation("Avatar");
                 });
@@ -276,6 +403,23 @@ namespace AgileHub.Api.Migrations
             modelBuilder.Entity("AgileHub.Api.Models.Domain.PokerPlanning.Story", b =>
                 {
                     b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.BoardColumn", b =>
+                {
+                    b.Navigation("Notes");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.Note", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("AgileHub.Api.Models.Domain.SprintRetro.RetroBoard", b =>
+                {
+                    b.Navigation("BoardColumns");
+
+                    b.Navigation("RetroBoardUsers");
                 });
 #pragma warning restore 612, 618
         }
